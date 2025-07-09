@@ -9,8 +9,11 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Http\Requests\UpdateOrderStatusRequest;
-
+use App\Mail\NewOrderNotification;
+use App\Mail\OrderConfirmation;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -50,6 +53,15 @@ class OrderController extends Controller
         }
 
         $order->update(['total_price' => $total]);
+
+        Mail::to($order->user->email)->send(new OrderConfirmation($order));
+
+
+        $admins = User::role('admin')->get();
+
+        foreach ($admins as $admin) {
+            Mail::to($admin->email)->send(new NewOrderNotification($order));
+        }
         $cart->items()->delete();
 
         return new OrderResource($order->load('items.medicine', 'user'));
@@ -98,7 +110,7 @@ class OrderController extends Controller
     public function destroy($id)
     {
         $order = Order::where('id', $id)
-                    ->where('user_id', auth()->id()) 
+                    ->where('user_id', auth()->id())
                     ->first();
 
         if (!$order) {

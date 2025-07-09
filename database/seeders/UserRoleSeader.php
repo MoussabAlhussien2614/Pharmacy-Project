@@ -33,9 +33,15 @@ class UserRoleSeader extends Seeder
             'email'=> 'admin3@gmail.com',
             'password'=> bcrypt('12345678')
         ]);
+        $adminUser4 = User::factory()->create([
+            'username'=>'moussab',
+            'email'=> 'moussab2614@gmail.com',
+            'password'=> bcrypt('12345678')
+        ]);
 
         $adminUser1->assignRole($admin);
         $adminUser2->assignRole($admin);
         $adminUser3->assignRole($admin);
+        $adminUser4->assignRole($admin);
     }
 }
