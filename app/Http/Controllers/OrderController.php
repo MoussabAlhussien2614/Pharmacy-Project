@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Http\Requests\UpdateOrderStatusRequest;
+use App\Mail\LowStockAlert;
 use App\Mail\NewOrderNotification;
 use App\Mail\OrderConfirmation;
 use App\Models\User;
@@ -99,6 +100,18 @@ class OrderController extends Controller
             foreach ($order->items as $item) {
                 $medicine = $item->medicine;
                 $medicine->decrement('quantity', $item->quantity);
+
+
+                // reload the medicine to get updated quantity
+                $medicine = $item->medicine->fresh();
+
+                // send alert if quantity < 10
+                if ($medicine->quantity < 10) {
+                    $admins = User::role('admin')->get();
+                    foreach ($admins as $admin) {
+                        Mail::to($admin->email)->send(new LowStockAlert($medicine));
+                    }
+                }
             }
         }
 
