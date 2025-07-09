@@ -36,16 +36,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-  Route::get('/user', [AuthController::class, 'user']);
+    Route::get('/user', [AuthController::class, 'user']);
 
     // Categories
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}', [CategoryController::class, 'show']);
+    
+    Route::get('/medicines/search', [MedicineController::class, 'search']);
 
 
     // Medicines
     Route::get('/medicines', [MedicineController::class, 'index']);
     Route::get('/medicines/{medicine}', [MedicineController::class, 'show']);
+    // search
 
 
     // Cart

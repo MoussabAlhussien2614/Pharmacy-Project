@@ -33,4 +33,27 @@ class MedicineController extends Controller
         $medicine->delete();
         return response()->noContent();
     }
+
+    public function search(Request $request)
+    {
+        $request->validate([
+                'type' => 'required|in:name,company,category',
+                'query' => 'required|string',
+            ]);
+        $query = $request->query('query');
+        $type = $request->query('type');
+
+        $medicines = Medicine::query();
+
+        if ($type === 'category') {
+            $medicines->whereHas('category', function ($q) use ($query) {
+                $q->where('name', 'like', "%$query%");
+            });
+        } else {
+            $medicines->where($type, 'like', "%$query%");
+        }
+
+        return MedicineResource::collection($medicines->with('category', 'creator')->get());
+    }
+
 }
