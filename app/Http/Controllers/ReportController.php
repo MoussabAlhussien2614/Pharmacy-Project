@@ -14,13 +14,14 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
     public function lowStock() {
-        $meds = Medicine::where('quantity','<',10)->get();
+        $meds = Medicine::where('quantity','<',10)->with('category','creator')->get();
         return MedicineResource::collection($meds);
+
     }
 
     public function expiring() {
         $date = Carbon::now()->addMonth();
-        $meds = Medicine::whereBetween('expiry_date',[now(),$date])->get();
+        $meds = Medicine::whereBetween('expiry_date',[now(),$date])->with('category','creator')->get();
         return MedicineResource::collection($meds);
     }
 

@@ -34,6 +34,24 @@ class MedicineController extends Controller
         return response()->noContent();
     }
 
+    public function addQuantity(Request $request, $id)
+    {
+        $request->validate([
+            'new_qty' => 'required|integer|min:1',
+        ]);
+
+        $medicine = Medicine::findOrFail($id);
+
+        $medicine->quantity += $request->input('new_qty');
+        $medicine->save();
+
+        return response()->json([
+            'message' => 'Quantity updated successfully.',
+            'medicine' => new MedicineResource($medicine->fresh()->load('category','creator')),
+        ]);
+    }
+
+
     public function search(Request $request)
     {
         $request->validate([

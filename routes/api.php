@@ -73,6 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/medicines', [MedicineController::class, 'store']);
         Route::post('/medicines/{medicine}', [MedicineController::class, 'update']);
         Route::delete('/medicines/{medicine}', [MedicineController::class, 'destroy']);
+        Route::post('/medicines/{id}/add-quantity', [MedicineController::class, 'addQuantity']);
+
 
         // Admin Orders
         Route::get('/admin/orders', [OrderController::class, 'index']);
