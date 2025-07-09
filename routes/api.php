@@ -41,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Categories
     Route::get('/categories', [CategoryController::class, 'index']);
     Route::get('/categories/{category}', [CategoryController::class, 'show']);
-    
+
     Route::get('/medicines/search', [MedicineController::class, 'search']);
 
 
@@ -76,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Admin Orders
         Route::get('/admin/orders', [OrderController::class, 'index']);
+        Route::get('/admin/orders/processing', [OrderController::class, 'processingOrders']);
         Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus']);
 
         // Reports

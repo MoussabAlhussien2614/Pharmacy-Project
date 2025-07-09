@@ -79,6 +79,16 @@ class OrderController extends Controller
     }
 
 
+    public function processingOrders() {
+        return OrderResource::collection(
+            Order::with('items.medicine','user')
+                 ->where('status','processing')
+                 ->orderBy('created_at','desc')
+                 ->get()
+        );
+    }
+
+
      public function index() {
         return OrderResource::collection(
             Order::with('items.medicine','user')->get()
