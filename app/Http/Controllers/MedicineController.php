@@ -16,18 +16,30 @@ class MedicineController extends Controller
     }
 
     public function store(CreateMedicineRequest $req) {
-        $med = Medicine::create($req->validated() + ['created_by'=>auth()->id()]);
-        return new MedicineResource($med->load('category','creator'));
+        $data = $req->validated();
+        $data['price'] = $data['price'] * 1.10; // Add 10%
+        $data['created_by'] = auth()->id();
+
+        $med = Medicine::create($data);
+        return new MedicineResource($med->load('category', 'creator'));
     }
+
 
     public function show(Medicine $medicine) {
         return new MedicineResource($medicine->load('category','creator'));
     }
 
     public function update(UpdateMedicineRequest $req, Medicine $medicine) {
-        $medicine->update($req->validated());
-        return new MedicineResource($medicine->fresh()->load('category','creator'));
+        $data = $req->validated();
+
+        if (isset($data['price'])) {
+            $data['price'] = $data['price'] * 1.10; // Add 10%
+        }
+
+        $medicine->update($data);
+        return new MedicineResource($medicine->fresh()->load('category', 'creator'));
     }
+
 
     public function destroy(Medicine $medicine) {
         $medicine->delete();
