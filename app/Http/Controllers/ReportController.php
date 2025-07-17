@@ -20,9 +20,12 @@ class ReportController extends Controller
     }
 
     public function expiring() {
-        $date = Carbon::now()->addMonth();
-        $meds = Medicine::whereBetween('expiry_date',[now(),$date])->with('category','creator')->get();
-        return MedicineResource::collection($meds);
+         $date = Carbon::now()->addMonth();
+         $meds = Medicine::where('expiry_date', '<', now())
+                   ->orWhereBetween('expiry_date', [now(), $date])
+                   ->with('category', 'creator')
+                   ->get();
+                   return MedicineResource::collection($meds);
     }
 
    public function sales(SalesReportRequest $request)
